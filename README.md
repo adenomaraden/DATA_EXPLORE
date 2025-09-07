@@ -1,134 +1,126 @@
+# 📊 DATA_EXPLORE — SQL Layoffs Analysis
 
+This project explores **layoffs data** using SQL.  
+The goal is to uncover insights about workforce reductions across companies, industries, locations, and years.
 
-# 📊 Layoffs Data Exploration with SQL
-
-This project explores global layoffs data using SQL.  
-The goal is to analyze patterns, trends, and insights around layoffs across companies, industries, countries, and time periods.
+The SQL script [`data exploring.sql`](./data%20exploring.sql) contains queries ranging from simple exploration to advanced analytical queries.
 
 ---
 
-## 🚀 Features
+## 📑 Table of Contents
 
-- **Data Exploration** → Quickly preview and explore the dataset with `SELECT *`.  
-- **Easier Queries** →  
-  - Find maximum layoffs  
-  - Identify companies with 100% layoffs  
-  - Check percentages and funding details  
-- **Aggregated Insights** →  
-  - Top companies, locations, countries, and industries by layoffs  
-  - Year-wise and stage-wise layoff summaries  
-- **Advanced Analysis** →  
-  - Rolling totals of layoffs by month  
-  - CTEs for cumulative layoffs  
-  - Ranking companies with the most layoffs per year (Top 3 each year)  
+1. [Project Overview](#-project-overview)  
+2. [Dataset](#-dataset)  
+3. [Queries Breakdown](#-queries-breakdown)  
+   - [Easier Queries](#-easier-queries)  
+   - [Aggregated Insights](#-aggregated-insights)  
+   - [Advanced Analysis](#-advanced-analysis)  
+4. [Insights You Can Extract](#-insights-you-can-extract)  
+5. [Tech Stack](#-tech-stack)  
+6. [How to Use](#-how-to-use)  
+7. [Future Improvements](#-future-improvements)  
+8. [License](#-license)  
+
+---
+
+## 📖 Project Overview
+
+The project uses SQL to answer key questions such as:  
+
+- Which companies had the **largest single-day layoffs**?  
+- Which industries and countries were most affected?  
+- What were the **yearly trends** of layoffs?  
+- Which companies consistently appeared in the **Top 3 layoffs per year**?  
+- What is the **cumulative total of layoffs over time**?  
 
 ---
 
 ## 📂 Dataset
 
-The dataset is stored in a table called **`standralising`**, containing:
+The dataset is stored in a table named **`standralising`**, with fields including:  
 
 - `company`  
-- `total_laid_off`  
-- `percentage_laid_off`  
+- `industry`  
 - `location`  
 - `country`  
-- `date`  
-- `industry`  
 - `stage`  
+- `date`  
+- `total_laid_off`  
+- `percentage_laid_off`  
 - `funds_raised`  
 
 ---
 
-## 🛠️ SQL Queries Breakdown
+## 🛠 Queries Breakdown
 
 ### 🔹 Easier Queries
+- View all records  
+- Maximum layoffs (`MAX(total_laid_off)`)  
+- Companies with **100% layoffs**  
+- Min/Max layoff percentage  
+
 ```sql
--- Maximum layoffs
-SELECT MAX(total_laid_off)
-FROM standralising;
-
--- Companies with 100% layoffs
-SELECT *
-FROM standralising
-WHERE percentage_laid_off = 1;
-
+SELECT MAX(total_laid_off) FROM standralising;
+SELECT * FROM standralising WHERE percentage_laid_off = 1;
 🔹 Aggregated Insights
--- Total layoffs by industry
-SELECT industry, SUM(total_laid_off) AS total_laid_off
-FROM standralising
-GROUP BY industry
-ORDER BY total_laid_off DESC;
+Biggest single-day layoffs
 
--- Total layoffs by country
+Most total layoffs by company
+
+Layoffs grouped by location, country, industry, stage
+
+Year-wise layoffs
+
+sql
+Copy code
 SELECT country, SUM(total_laid_off) AS total_laid_off
 FROM standralising
 GROUP BY country
 ORDER BY total_laid_off DESC;
+🔹 Advanced Analysis
+Top 3 companies per year (using window functions)
 
-🔹 Advanced Queries
--- Rolling total of layoffs per month
+Rolling monthly totals of layoffs
+
+Cumulative layoffs using CTE + window functions
+
+sql
+Copy code
 WITH DATE_CTE AS 
 (
   SELECT SUBSTRING(date,1,7) AS dates, SUM(total_laid_off) AS total_laid_off
   FROM standralising
   GROUP BY dates
-  ORDER BY dates ASC
 )
 SELECT dates, SUM(total_laid_off) OVER (ORDER BY dates ASC) AS rolling_total_layoffs
-FROM DATE_CTE
-ORDER BY dates ASC;
-
+FROM DATE_CTE;
 📈 Insights You Can Extract
+📌 Top companies with the largest layoffs (single day & total)
 
-📌 Largest single-day layoffs by company
+📌 Industries & countries most impacted
 
-📌 Industries and countries most affected
+📌 Year-over-year layoff trends
 
-📌 Layoff trends year by year
-
-📌 Top 3 companies per year with most layoffs
-
-📌 Rolling and cumulative totals of layoffs
+📌 Cumulative layoffs across months
 
 🧑‍💻 Tech Stack
-
 SQL (MySQL / PostgreSQL compatible)
 
-Relational Database to store and query data
-
-Queries structured for exploration + insights
-
-📸 Example Output (Optional)
-
-Add charts or screenshots of query results / dashboards here for better presentation.
+Data organized in a relational database
 
 🌟 How to Use
+Clone the repo:
 
-Clone this repo:
+bash
+Copy code
+git clone https://github.com/adenomaraden/DATA_EXPLORE.git
+Open data exploring.sql in your SQL client.
 
-git clone https://github.com/your-username/layoffs-sql-analysis.git
-
-
-Import the dataset into your SQL database.
-
-Run queries in your favorite SQL client (MySQL Workbench, DBeaver, pgAdmin, etc.).
-
-Explore, analyze, and derive insights!
+Run queries step by step on the dataset table (standralising).
 
 📌 Future Improvements
+Add data cleaning pipeline (remove duplicates, standardize formats).
 
-📊 Add visualizations (Tableau, Power BI, or Python Matplotlib/Seaborn)
+Build visualizations (Tableau / Power BI / Python).
 
-⚡ Automate ETL pipeline to refresh data
-
-🤖 Extend to predictive analysis with ML models
-
-🤝 Contributing
-
-Pull requests are welcome!
-For major changes, please open an issue first to discuss what you’d like to change.
-
-📜 License
-
-This project is licensed under the MIT License.
+Extend project with ETL automation for live updates
